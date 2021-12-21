@@ -126,7 +126,7 @@ class CacheManager implements BaseCacheManager {
     key ??= url;
     FileInfo? cacheFile;
     try {
-      cacheFile = await getFileFromCache(key);
+      cacheFile = await getFileFromCache(key, ignoreMemCache: true);
       if (cacheFile != null) {
         streamController.add(cacheFile);
         withProgress = false;
