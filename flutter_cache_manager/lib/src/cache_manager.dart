@@ -114,19 +114,27 @@ class CacheManager implements BaseCacheManager {
   /// might be outdated and a new file is being downloaded in the background.
   @override
   Stream<FileResponse> getFileStream(String url,
-      {String? key, Map<String, String>? headers, bool withProgress = false}) {
+      {String? key,
+      Map<String, String>? headers,
+      bool withProgress = false,
+      bool force = false}) {
     key ??= url;
     final streamController = StreamController<FileResponse>();
-    _pushFileToStream(streamController, url, key, headers, withProgress);
+    _pushFileToStream(streamController, url, key, headers, withProgress, force);
     return streamController.stream;
   }
 
-  Future<void> _pushFileToStream(StreamController streamController, String url,
-      String? key, Map<String, String>? headers, bool withProgress) async {
+  Future<void> _pushFileToStream(
+      StreamController streamController,
+      String url,
+      String? key,
+      Map<String, String>? headers,
+      bool withProgress,
+      bool force) async {
     key ??= url;
     FileInfo? cacheFile;
     try {
-      cacheFile = await getFileFromCache(key, ignoreMemCache: true);
+      cacheFile = await getFileFromCache(key, ignoreMemCache: force);
       if (cacheFile != null) {
         streamController.add(cacheFile);
         withProgress = false;
